@@ -3,6 +3,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./db");
 const expenseRoutes = require("./routes/expenses");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 
 dotenv.config();
 const app = express();
@@ -13,8 +15,10 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use("/api/expenses", expenseRoutes);
 app.get("/", (req, res) => res.send("Splitwise"));
+app.use("/api/expenses", expenseRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 // Global error handler (simple)
 app.use((err, req, res, next) => {
