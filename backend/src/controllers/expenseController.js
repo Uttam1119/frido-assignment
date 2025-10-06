@@ -1,7 +1,8 @@
-import Expense from "../models/Expense.js";
+const Expense = require("../models/expense.js");
 
 // Create expense
-export const createExpense = async (req, res, next) => {
+const createExpense = async (req, res, next) => {
+  console.log("Request body:", req.body);
   try {
     const { description, amount, paidBy, participants, date } = req.body;
     if (
@@ -30,7 +31,7 @@ export const createExpense = async (req, res, next) => {
 };
 
 // Get all expenses
-export const getExpenses = async (req, res, next) => {
+const getExpenses = async (req, res, next) => {
   try {
     const expenses = await Expense.find().sort({ date: -1 });
     res.json(expenses);
@@ -40,7 +41,7 @@ export const getExpenses = async (req, res, next) => {
 };
 
 // Delete expense
-export const deleteExpense = async (req, res, next) => {
+const deleteExpense = async (req, res, next) => {
   try {
     const expense = await Expense.findByIdAndDelete(req.params.id);
     if (!expense) return res.status(404).json({ message: "Expense not found" });
@@ -51,7 +52,7 @@ export const deleteExpense = async (req, res, next) => {
 };
 
 // Calculate balances and suggested settlements
-export const getBalances = async (req, res, next) => {
+const getBalances = async (req, res, next) => {
   try {
     const expenses = await Expense.find();
     // net balances per user: positive => should receive money; negative => owes money
@@ -116,4 +117,11 @@ export const getBalances = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+module.exports = {
+  createExpense,
+  getExpenses,
+  deleteExpense,
+  getBalances,
 };
