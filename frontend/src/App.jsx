@@ -30,7 +30,7 @@ function App() {
       {" "}
       <nav className="nav">
         {" "}
-        <h1 className="brand">Splitwise - Level 2</h1>{" "}
+        <h1 className="brand">Splitwise</h1>{" "}
         <div className="links">
           {!token ? (
             <>
