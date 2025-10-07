@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { createGroup, fetchUsers } from "../api.js";
 import { AuthContext } from "../context/authContext.jsx";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
 
-function CreateGroup(token) {
-  // const { token } = useContext(AuthContext);
+function CreateGroup() {
+  const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
