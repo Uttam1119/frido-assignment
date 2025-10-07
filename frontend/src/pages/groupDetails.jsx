@@ -43,18 +43,6 @@ function GroupDetails({ token }) {
     loadData();
   }, [id, token]);
 
-  // Edit expense
-  const handleEditExpense = (expense) => {
-    setEditingExpense({
-      ...expense,
-      amount: expense.amount.toString(),
-      splitDetails: expense.splitDetails.map((s) => ({
-        ...s,
-        amount: s.amount.toString(),
-      })),
-    });
-  };
-
   const handleUpdateExpense = async (e) => {
     e.preventDefault();
     try {
