@@ -6,6 +6,10 @@ import Balances from "./pages/balances.jsx";
 import Login from "./pages/logIn.jsx";
 import Signup from "./pages/signUp.jsx";
 import { AuthContext } from "./context/authContext.jsx";
+import Groups from "./pages/groups.jsx";
+import GroupDetails from "./pages/groupDetails.jsx";
+import AddGroupExpense from "./pages/addGroupExpense.jsx";
+import CreateGroup from "./pages/createGroup.jsx";
 
 function ProtectedRoute({ children }) {
   const { token } = useContext(AuthContext);
@@ -38,6 +42,7 @@ function App() {
               {" "}
               <Link to="/">Home</Link> <Link to="/add">Add Expense</Link>{" "}
               <Link to="/balances">Balances</Link>
+              <Link to="/groups">Groups</Link>
               <button
                 onClick={logout}
                 style={{
@@ -90,6 +95,39 @@ function App() {
             element={
               <ProtectedRoute>
                 <Balances />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/groups"
+            element={
+              <ProtectedRoute>
+                <Groups token={token} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/groups/:id"
+            element={
+              <ProtectedRoute>
+                <GroupDetails token={token} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/groups/:id/add"
+            element={
+              <ProtectedRoute>
+                <AddGroupExpense token={token} />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/groups/create"
+            element={
+              <ProtectedRoute>
+                <CreateGroup />
               </ProtectedRoute>
             }
           />

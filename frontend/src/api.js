@@ -59,3 +59,77 @@ export async function fetchUsers(token) {
   if (!res.ok) throw new Error("Failed to fetch users");
   return res.json();
 }
+
+// GROUPS
+export const fetchGroups = async (token) => {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/group`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Failed to fetch groups");
+  return res.json();
+};
+
+export const createGroup = async (data, token) => {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/group`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to create group");
+  return res.json();
+};
+
+export const fetchGroupDetails = async (id, token) => {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/group/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Failed to fetch group details");
+  return res.json();
+};
+
+export const fetchGroupExpenses = async (groupId, token) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/group/expenses/${groupId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  if (!res.ok) throw new Error("Failed to fetch group expenses");
+  return res.json();
+};
+
+export const createGroupExpense = async (data, token) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/group/expenses/${data.groupId}`, // use data.groupId here
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  const resData = await res.json();
+  if (!res.ok) {
+    console.error("Error response:", resData); // log backend error
+    throw new Error("Failed to add group expense");
+  }
+
+  return resData;
+};
+
+export const fetchGroupBalances = async (groupId, token) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/group/balances/${groupId}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  if (!res.ok) throw new Error("Failed to fetch balances");
+  return res.json();
+};
