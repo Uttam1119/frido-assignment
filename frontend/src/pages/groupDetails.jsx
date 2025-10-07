@@ -47,7 +47,11 @@ function GroupDetails({ token }) {
   const handleEditExpense = (expense) => {
     setEditingExpense({
       ...expense,
-      amount: expense.amount.toString(), // keep amount as string for input
+      amount: expense.amount.toString(),
+      splitDetails: expense.splitDetails.map((s) => ({
+        ...s,
+        amount: s.amount.toString(),
+      })),
     });
   };
 
@@ -56,24 +60,27 @@ function GroupDetails({ token }) {
     try {
       const payload = {
         ...editingExpense,
-        amount: Number(editingExpense.amount), // convert to number before sending
+        amount: Number(editingExpense.amount),
+        splitDetails: editingExpense.splitDetails.map((s) => ({
+          userId: s.userId,
+          amount: Number(s.amount),
+        })),
       };
       await updateGroupExpense(editingExpense._id, payload, token);
       setEditingExpense(null);
-      await loadData(); // refresh expenses and balances
+      await loadData();
     } catch (err) {
       alert("Failed to update expense: " + err.message);
     }
   };
 
-  // Delete expense
   const handleDeleteExpense = async (expenseId) => {
     if (!window.confirm("Are you sure you want to delete this expense?"))
       return;
 
     try {
       await deleteGroupExpense(expenseId, token);
-      await loadData(); // refresh expenses and balances
+      await loadData();
     } catch (err) {
       alert("Failed to delete expense: " + err.message);
     }
@@ -100,7 +107,7 @@ function GroupDetails({ token }) {
         <h3 className="text-lg font-semibold mb-2">Members</h3>
         <ul className="list-disc ml-5 text-gray-700">
           {group?.members.map((m) => (
-            <li key={m._id || m}>{m.name || m}</li>
+            <li key={String(m._id)}>{m.name || "Unknown"}</li>
           ))}
         </ul>
       </div>
@@ -109,86 +116,141 @@ function GroupDetails({ token }) {
       <div className="bg-white p-4 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-2">Group Expenses</h3>
 
-        {/* Edit Expense Form */}
-        {editingExpense && (
-          <form
-            onSubmit={handleUpdateExpense}
-            className="bg-gray-100 p-4 rounded mb-4"
-          >
-            <input
-              type="text"
-              value={editingExpense.description}
-              onChange={(e) =>
-                setEditingExpense({
-                  ...editingExpense,
-                  description: e.target.value,
-                })
-              }
-              className="border p-2 rounded mb-2 w-full"
-              placeholder="Description"
-              required
-            />
-            <input
-              type="number"
-              value={editingExpense.amount}
-              onChange={(e) =>
-                setEditingExpense({ ...editingExpense, amount: e.target.value })
-              }
-              className="border p-2 rounded mb-2 w-full"
-              placeholder="Amount"
-              required
-            />
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
-              >
-                Update
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditingExpense(null)}
-                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        )}
-
         {/* Expenses List */}
         {expenses.length === 0 ? (
           <p className="text-gray-500">No expenses in this group yet.</p>
         ) : (
           <ul className="space-y-3">
             {expenses.map((e) => (
-              <div
-                key={e._id}
-                className="flex justify-between items-start border-b pb-2"
-              >
-                <div>
-                  <div className="font-semibold text-gray-800">
-                    {e.description} — ₹{e.amount}
+              <div key={String(e._id)} className="flex flex-col border-b pb-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="font-semibold text-gray-800">
+                      {e.description} — ₹{e.amount}{" "}
+                      <span className="text-sm text-gray-500">
+                        ({e.splitType})
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Paid by: {e.paidBy?.name || "Unknown"} •{" "}
+                      {new Date(e.date).toLocaleDateString()}
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-500">
-                    Paid by: {e.paidBy?.name || e.paidBy} •{" "}
-                    {new Date(e.date).toLocaleDateString()}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() =>
+                        setEditingExpense(
+                          editingExpense?._id === e._id ? null : e
+                        )
+                      }
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteExpense(e._id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEditExpense(e)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+
+                {/* Inline Edit Form */}
+                {editingExpense?._id === e._id && (
+                  <form
+                    onSubmit={handleUpdateExpense}
+                    className="bg-gray-100 p-4 rounded mt-2"
                   >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteExpense(e._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                  >
-                    Delete
-                  </button>
-                </div>
+                    <input
+                      type="text"
+                      value={editingExpense.description}
+                      onChange={(ev) =>
+                        setEditingExpense({
+                          ...editingExpense,
+                          description: ev.target.value,
+                        })
+                      }
+                      className="border p-2 rounded mb-2 w-full"
+                      placeholder="Description"
+                      required
+                    />
+                    <input
+                      type="number"
+                      value={editingExpense.amount}
+                      onChange={(ev) =>
+                        setEditingExpense({
+                          ...editingExpense,
+                          amount: ev.target.value,
+                        })
+                      }
+                      className="border p-2 rounded mb-2 w-full"
+                      placeholder="Total Amount"
+                      required
+                    />
+
+                    {editingExpense.splitType !== "equal" && (
+                      <div className="mb-2">
+                        <h4 className="font-semibold mb-1">
+                          Split Details ({editingExpense.splitType})
+                        </h4>
+                        {editingExpense.splitDetails.map((s, idx) => {
+                          const member = group.members.find(
+                            (m) =>
+                              String(m._id) === String(s.userId._id || s.userId)
+                          );
+                          const name = member?.name || "Unknown";
+
+                          return (
+                            <div
+                              key={String(s.userId._id || s.userId)}
+                              className="flex gap-2 items-center mb-1"
+                            >
+                              <span className="w-24">{name}</span>
+                              <input
+                                type="number"
+                                value={s.amount}
+                                onChange={(ev) => {
+                                  const newSplits = [
+                                    ...editingExpense.splitDetails,
+                                  ];
+                                  newSplits[idx].amount = ev.target.value;
+                                  setEditingExpense({
+                                    ...editingExpense,
+                                    splitDetails: newSplits,
+                                  });
+                                }}
+                                className="border p-1 rounded w-20"
+                                placeholder={
+                                  editingExpense.splitType === "percentage"
+                                    ? "%"
+                                    : "Amount"
+                                }
+                                required
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
+                      >
+                        Update
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingExpense(null)}
+                        className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                )}
               </div>
             ))}
           </ul>
@@ -196,40 +258,46 @@ function GroupDetails({ token }) {
       </div>
 
       {/* Balances & Settlements */}
-      <div className="bg-white p-4 rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-2">Balances</h3>
-        <ul className="space-y-1 text-gray-700">
-          {Object.entries(balancesData.balances).map(([userId, balance]) => {
-            const member = group.members.find((m) => (m._id || m) === userId);
-            const name = member?.name || userId;
-            return (
-              <li key={userId}>
-                {name}:{" "}
-                {balance >= 0
-                  ? `Owes ₹0, gets ₹${balance}`
-                  : `Owes ₹${-balance}`}
-              </li>
-            );
-          })}
-        </ul>
+      {expenses.length > 0 && (
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-lg font-semibold mb-2">Balances</h3>
+          <ul className="space-y-1 text-gray-700">
+            {Object.entries(balancesData.balances).map(([userId, balance]) => {
+              const member = group.members.find(
+                (m) => String(m._id) === String(userId)
+              );
+              const name = member?.name || userId;
+              return (
+                <li key={String(userId)}>
+                  {name}:{" "}
+                  {balance >= 0
+                    ? `Owes ₹0, gets ₹${balance}`
+                    : `Owes ₹${-balance}`}
+                </li>
+              );
+            })}
+          </ul>
 
-        <h3 className="text-lg font-semibold mt-4 mb-2">Settlements</h3>
-        <ul className="space-y-1 text-gray-700">
-          {balancesData.settlements.map((s, idx) => {
-            const fromMember = group.members.find(
-              (m) => (m._id || m) === s.from
-            );
-            const toMember = group.members.find((m) => (m._id || m) === s.to);
-            const fromName = fromMember?.name || s.from;
-            const toName = toMember?.name || s.to;
-            return (
-              <li key={idx}>
-                {fromName} pays {toName} ₹{s.amount}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+          <h3 className="text-lg font-semibold mt-4 mb-2">Settlements</h3>
+          <ul className="space-y-1 text-gray-700">
+            {balancesData.settlements.map((s, idx) => {
+              const fromMember = group.members.find(
+                (m) => String(m._id) === String(s.from)
+              );
+              const toMember = group.members.find(
+                (m) => String(m._id) === String(s.to)
+              );
+              const fromName = fromMember?.name || s.from;
+              const toName = toMember?.name || s.to;
+              return (
+                <li key={idx}>
+                  {fromName} pays {toName} ₹{s.amount}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

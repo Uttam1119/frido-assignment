@@ -127,9 +127,45 @@ export const fetchGroupBalances = async (groupId, token) => {
   const res = await fetch(
     `${import.meta.env.VITE_API_URL}/group/balances/${groupId}`,
     {
+      "Content-Type": "application/json",
       headers: { Authorization: `Bearer ${token}` },
     }
   );
   if (!res.ok) throw new Error("Failed to fetch balances");
   return res.json();
+};
+
+export const deleteGroupExpense = async (id, token) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/group/expenses/${id}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  if (!res.ok) throw new Error("Failed to delete expense");
+  return res.json();
+};
+
+// api.js
+export const updateGroupExpense = async (id, expenseData, token) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/group/expenses/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // if you are using auth
+      },
+      body: JSON.stringify(expenseData),
+    }
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to update expense");
+  }
+
+  const data = await res.json();
+  return data;
 };

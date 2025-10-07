@@ -127,7 +127,7 @@ function App() {
             path="/groups/create"
             element={
               <ProtectedRoute>
-                <CreateGroup />
+                <CreateGroup token={token} />
               </ProtectedRoute>
             }
           />

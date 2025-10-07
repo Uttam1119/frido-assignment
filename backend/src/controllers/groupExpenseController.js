@@ -30,15 +30,10 @@ const calculateSplits = (splitType, amount, members, splitDetails = []) => {
 // Create group expense
 const createGroupExpense = async (req, res) => {
   try {
-    const {
-      description,
-      amount,
-      paidBy,
-      groupId,
-      category,
-      splitType,
-      splitDetails,
-    } = req.body;
+    const { description, amount, paidBy, category, splitType, splitDetails } =
+      req.body;
+
+    const groupId = req.params.groupId;
 
     const group = await Group.findById(groupId);
     if (!group) return res.status(404).json({ message: "Group not found" });
@@ -77,16 +72,14 @@ const getGroupExpenses = async (req, res) => {
   }
 };
 
-// Get group balances
 const getGroupBalances = async (req, res) => {
   try {
-    const GroupExpenses = await GroupExpense.find({
-      groupId: req.params.groupId,
-    });
+    const expenses = await GroupExpense.find({ groupId: req.params.groupId });
     const net = {};
 
-    GroupExpenses.forEach((exp) => {
-      const { paidBy, amount, splitDetails } = exp;
+    // Step 1: Compute net balances
+    for (const e of expenses) {
+      const { paidBy, amount, splitDetails } = e;
       if (!net[paidBy]) net[paidBy] = 0;
       net[paidBy] += amount;
 
@@ -94,14 +87,53 @@ const getGroupBalances = async (req, res) => {
         if (!net[s.userId]) net[s.userId] = 0;
         net[s.userId] -= s.amount;
       });
+    }
+
+    // Round small decimals
+    Object.keys(net).forEach((k) => {
+      net[k] = Math.round((net[k] + Number.EPSILON) * 100) / 100;
+      if (Object.is(net[k], -0)) net[k] = 0;
     });
 
-    res.json(net);
+    // Step 2: Generate settlements
+    const creditors = [];
+    const debtors = [];
+
+    for (const [user, balance] of Object.entries(net)) {
+      if (balance > 0) creditors.push({ user, amount: balance });
+      else if (balance < 0) debtors.push({ user, amount: -balance });
+    }
+
+    creditors.sort((a, b) => b.amount - a.amount);
+    debtors.sort((a, b) => b.amount - a.amount);
+
+    const settlements = [];
+    let i = 0,
+      j = 0;
+
+    while (i < debtors.length && j < creditors.length) {
+      const debtor = debtors[i];
+      const creditor = creditors[j];
+      const payAmount = Math.min(debtor.amount, creditor.amount);
+
+      settlements.push({
+        from: debtor.user,
+        to: creditor.user,
+        amount: Math.round((payAmount + Number.EPSILON) * 100) / 100,
+      });
+
+      debtor.amount -= payAmount;
+      creditor.amount -= payAmount;
+
+      if (debtor.amount <= 0.005) i++;
+      if (creditor.amount <= 0.005) j++;
+    }
+
+    res.json({ balances: net, settlements });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
 // Update group expense
 const updateGroupExpense = async (req, res) => {
   try {

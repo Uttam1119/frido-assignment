@@ -22,7 +22,7 @@ router.get("/", getUserGroups);
 router.get("/:id", getGroupById);
 
 // Group expenses
-router.post("/expense", createGroupExpense);
+router.post("/expenses/:groupId", createGroupExpense);
 router.get("/expenses/:groupId", getGroupExpenses);
 router.get("/balances/:groupId", getGroupBalances);
 router.put("/expenses/:id", updateGroupExpense);
