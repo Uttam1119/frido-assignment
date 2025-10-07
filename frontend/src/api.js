@@ -6,19 +6,6 @@ export async function fetchExpenses() {
   return res.json();
 }
 
-// export async function createExpense(data) {
-//   const res = await fetch(`${API_BASE}/expenses`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(data),
-//   });
-//   if (!res.ok) {
-//     const err = await res.json().catch(() => ({}));
-//     throw new Error(err.message || "Failed to create expense");
-//   }
-//   return res.json();
-// }
-
 export async function createExpense(data, token) {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/expenses`, {
     method: "POST",

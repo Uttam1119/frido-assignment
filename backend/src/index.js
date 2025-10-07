@@ -5,6 +5,7 @@ const connectDB = require("./db");
 const expenseRoutes = require("./routes/expenses");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const groupRoutes = require("./routes/group");
 
 dotenv.config();
 const app = express();
@@ -19,8 +20,8 @@ app.get("/", (req, res) => res.send("Splitwise"));
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/group", groupRoutes);
 
-// Global error handler (simple)
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Server error", error: err.message });
