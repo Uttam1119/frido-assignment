@@ -79,3 +79,54 @@ body {
   padding: 8px 0;
   border-bottom: 1px solid #f3f4f6;
 }
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+/* Common styles for both <a> and <button> */
+.nav-link {
+  text-decoration: none;
+  color: #1f2937;
+  font-weight: 500;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  background-color: #f9fafb;
+}
+
+/* Hover and active effects */
+.nav-link:hover {
+  border-color: #d1d5db;
+  background-color: #f3f4f6;
+}
+
+.logout-btn {
+  color: #ef4444;
+  background-color: #fff;
+}
+
+.logout-btn:hover {
+  border-color: #ef4444;
+  background-color: #fee2e2;
+}
+
+/* Responsive behavior */
+@media (max-width: 700px) {
+  .links {
+    flex-direction: column;
+    align-items: stretch; /* ensures full width alignment */
+  }
+
+  .nav-link {
+    width: 100%; /* make each button full width */
+    text-align: center;
+  }
+}

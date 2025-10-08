@@ -32,23 +32,28 @@ function App() {
         <div className="links">
           {!token ? (
             <>
-              <Link to="/login">Login</Link> <Link to="/signup">Signup</Link>
+              <Link to="/login" className="nav-link">
+                Login
+              </Link>
+              <Link to="/signup" className="nav-link">
+                Signup
+              </Link>
             </>
           ) : (
             <>
-              <Link to="/">Home</Link> <Link to="/add">Add Expense</Link>{" "}
-              <Link to="/balances">Balances</Link>
-              <Link to="/groups">Groups</Link>
-              <button
-                onClick={logout}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#ef4444",
-                  cursor: "pointer",
-                  marginLeft: "10px",
-                }}
-              >
+              <Link to="/" className="nav-link">
+                Home
+              </Link>
+              <Link to="/add" className="nav-link">
+                Add Expense
+              </Link>
+              <Link to="/balances" className="nav-link">
+                Balances
+              </Link>
+              <Link to="/groups" className="nav-link">
+                Groups
+              </Link>
+              <button onClick={logout} className="nav-link logout-btn">
                 Logout
               </button>
             </>
