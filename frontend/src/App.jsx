@@ -27,19 +27,15 @@ function App() {
 
   return (
     <div className="app">
-      {" "}
       <nav className="nav">
-        {" "}
         <h1 className="brand">Splitwise</h1>{" "}
         <div className="links">
           {!token ? (
             <>
-              {" "}
               <Link to="/login">Login</Link> <Link to="/signup">Signup</Link>
             </>
           ) : (
             <>
-              {" "}
               <Link to="/">Home</Link> <Link to="/add">Add Expense</Link>{" "}
               <Link to="/balances">Balances</Link>
               <Link to="/groups">Groups</Link>
@@ -53,11 +49,11 @@ function App() {
                   marginLeft: "10px",
                 }}
               >
-                Logout{" "}
+                Logout
               </button>
             </>
-          )}{" "}
-        </div>{" "}
+          )}
+        </div>
       </nav>
       <main className="container">
         <Routes>

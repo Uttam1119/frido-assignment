@@ -35,21 +35,6 @@ export async function fetchBalances() {
   return res.json();
 }
 
-export async function authedFetch(url, method = "GET", body, token) {
-  const opts = {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(url, opts);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Request failed");
-  return data;
-}
-
 export async function fetchUsers(token) {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
     headers: {
