@@ -17,8 +17,20 @@ body {
 }
 
 .brand {
-  font-weight: 700;
-  margin: 0;
+  font-size: 2rem; /* larger than normal text */
+  font-weight: bold; /* bold for emphasis */
+  font-family: "Poppins", sans-serif; /* stylish font */
+}
+
+.brand-link {
+  color: #1f2937; /* purple-ish color */
+  text-decoration: none; /* remove underline */
+  transition: color 0.3s;
+}
+
+.brand-link:hover {
+  color: #2563eb; /* lighter shade on hover */
+  cursor: pointer; /* show clickable pointer */
 }
 
 .links a {

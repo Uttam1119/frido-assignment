@@ -29,7 +29,9 @@ function App() {
     <div className="app">
       <nav className="nav ">
         <h1 className="brand">
-          <Link to="/">Splitwise</Link>
+          <Link to="/" className="brand-link">
+            Splitwise
+          </Link>
         </h1>
         <div className="links">
           {!token ? (
