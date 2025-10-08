@@ -122,6 +122,21 @@ export const fetchGroupDetails = async (id, token) => {
   }
 };
 
+export const deleteGroup = async (id, token) => {
+  try {
+    const res = await axios.delete(`${API_BASE}/group/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    throw new error(
+      error.response?.data?.message || "Failed to delete a group"
+    );
+  }
+};
+
 export const fetchGroupExpenses = async (groupId, token) => {
   try {
     const res = await axios.get(`${API_BASE}/group/expenses/${groupId}`, {

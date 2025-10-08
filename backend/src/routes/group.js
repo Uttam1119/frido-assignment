@@ -7,6 +7,7 @@ const {
   createGroup,
   getUserGroups,
   getGroupById,
+  deleteGroup,
 } = require("../controllers/groupController");
 const {
   createGroupExpense,
@@ -20,6 +21,7 @@ const {
 router.post("/", createGroup);
 router.get("/", getUserGroups);
 router.get("/:id", getGroupById);
+router.delete("/:id", deleteGroup);
 
 // Group expenses
 router.post("/expenses/:groupId", createGroupExpense);
