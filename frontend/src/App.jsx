@@ -27,7 +27,7 @@ function App() {
 
   return (
     <div className="app">
-      <nav className="nav">
+      <nav className="nav w-full h-16 flex items-center justify-between px-6 bg-white shadow">
         <h1 className="brand">Splitwise</h1>{" "}
         <div className="links">
           {!token ? (

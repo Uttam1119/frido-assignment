@@ -27,8 +27,8 @@ function Signup() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-gray-200 transform transition-all hover:-translate-y-1 hover:shadow-2xl">
+    <div className="mt-35 flex items-center justify-center ">
+      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Create Account
         </h2>
