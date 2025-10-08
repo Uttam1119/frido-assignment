@@ -14,9 +14,9 @@ function AddExpense({ token, currentUserId }) {
       .then((data) => {
         setUsers(data);
         if (currentUserId && data.some((u) => u._id === currentUserId)) {
-          setPaidBy(currentUserId); // set to a valid ID
+          setPaidBy(currentUserId);
         } else if (data.length > 0) {
-          setPaidBy(data[0]._id); // fallback: first user in list
+          setPaidBy(data[0]._id);
         }
       })
       .catch((err) => console.error("Error fetching users:", err));
@@ -51,7 +51,7 @@ function AddExpense({ token, currentUserId }) {
       setDescription("");
       setAmount("");
       setSelectedParticipants([]);
-      setPaidBy(currentUserId);
+      setPaidBy();
     } catch (err) {
       console.error("Error creating expense:", err);
       setMessage("Failed to add expense.");
@@ -119,7 +119,7 @@ function AddExpense({ token, currentUserId }) {
                     );
                   }
                 }}
-              />{" "}
+              />
               {user.name}
             </label>
           ))}

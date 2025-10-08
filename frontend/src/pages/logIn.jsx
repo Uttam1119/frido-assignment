@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext.jsx";
 
@@ -14,17 +15,21 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-      login(data);
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+        form,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const dataa = res.data;
+      // if (!res.ok) throw new Error(dataa.message);
+      login(dataa);
       navigate("/");
     } catch (error) {
-      setErr(error.message);
+      setErr(error.response?.data?.message || error.message);
     }
   };
 

@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,13 +13,18 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      // const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(form),
+      // });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/signup`,
+        form,
+        { headers: { "Content-Type": "application/json" } }
+      );
+      // const data = res.data();
+      // if (!res.ok) throw new Error(data.message);
       alert("Signup successful! Please login.");
       navigate("/login");
     } catch (error) {

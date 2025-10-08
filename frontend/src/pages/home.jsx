@@ -6,7 +6,6 @@ import {
   fetchGroups,
 } from "../api.js";
 import { AuthContext } from "../context/authContext.jsx";
-import { Link } from "react-router-dom";
 
 function Home() {
   const { token } = useContext(AuthContext);
