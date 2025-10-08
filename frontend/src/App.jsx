@@ -28,7 +28,9 @@ function App() {
   return (
     <div className="app">
       <nav className="nav ">
-        <h1 className="brand">Splitwise</h1>{" "}
+        <h1 className="brand">
+          <Link to="/">Splitwise</Link>
+        </h1>
         <div className="links">
           {!token ? (
             <>
