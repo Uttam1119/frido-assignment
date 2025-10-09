@@ -52,14 +52,12 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 py-10 px-4">
-      {" "}
       <div className="max-w-5xl mx-auto space-y-10">
-        {/* Header */}{" "}
+        {/* Header */}
         <div className="bg-white shadow p-4 rounded-lg flex justify-between items-center">
-          {" "}
           <h2 className="text-3xl font-extrabold text-indigo-700 tracking-tight">
-            Dashboard{" "}
-          </h2>{" "}
+            Dashboard
+          </h2>
         </div>
         {/* All Expenses Section */}
         <section>
