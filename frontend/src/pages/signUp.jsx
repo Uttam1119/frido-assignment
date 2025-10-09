@@ -18,17 +18,17 @@ function Signup() {
       //   headers: { "Content-Type": "application/json" },
       //   body: JSON.stringify(form),
       // });
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/signup`,
-        form,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      await axios.post(`${import.meta.env.VITE_API_URL}/auth/signup`, form, {
+        headers: { "Content-Type": "application/json" },
+      });
       // const data = res.data();
       // if (!res.ok) throw new Error(data.message);
       alert("Signup successful! Please login.");
       navigate("/login");
     } catch (error) {
-      setErr(error.message);
+      const msg =
+        error.response?.data?.message || "Something went wrong. Try again.";
+      setErr(msg);
     }
   };
 
