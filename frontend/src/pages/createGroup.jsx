@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { createGroup, fetchUsers } from "../api.js";
 import { AuthContext } from "../context/authContext.jsx";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 
 function CreateGroup() {
   const { token } = useContext(AuthContext);
@@ -11,6 +10,7 @@ function CreateGroup() {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [message, setMessage] = useState("");
 
   // Fetch all users
   useEffect(() => {
@@ -20,6 +20,7 @@ function CreateGroup() {
         setUsers(data);
       } catch (err) {
         console.error("Failed to fetch users:", err);
+        setMessage("❌ Failed to load users");
       }
     };
     loadUsers();
@@ -27,69 +28,100 @@ function CreateGroup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return alert("Group name is required");
+    if (!name.trim()) {
+      setMessage("⚠️ Group name is required");
+      return;
+    }
 
     try {
       setLoading(true);
       await createGroup({ name, members: selectedMembers }, token);
-      navigate("/"); // Back to home
+      setMessage("✅ Group created successfully!");
+      setTimeout(() => navigate("/"), 1000);
     } catch (err) {
-      alert("Failed to create group: " + err.message);
+      setMessage("❌ Failed to create group: " + err.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleCheckboxChange = (userId) => {
-    setSelectedMembers(
-      (prev) =>
-        prev.includes(userId)
-          ? prev.filter((id) => id !== userId) // uncheck
-          : [...prev, userId] // check
+    setSelectedMembers((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
     );
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow mt-10">
-      <h2 className="text-xl font-bold text-indigo-700 mb-4">
-        Create New Group
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Group Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full border p-2 rounded"
-        />
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center py-10 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-8">
+        <h2 className="text-2xl font-extrabold text-center text-indigo-700 mb-6">
+          Create New Group
+        </h2>
 
-        {/* Checkbox for selecting members */}
-        <div>
-          <label className="block mb-2 font-medium">Select Members:</label>
-          <div className="space-y-1 max-h-40 overflow-y-auto border p-2 rounded">
-            {users.map((user) => (
-              <label key={user._id} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  value={user._id}
-                  checked={selectedMembers.includes(user._id)}
-                  onChange={() => handleCheckboxChange(user._id)}
-                  className="w-4 h-4"
-                />
-                <span>{user.name}</span>
-              </label>
-            ))}
+        {message && (
+          <p
+            className={`text-center text-sm mb-4 ${
+              message.includes("✅")
+                ? "text-green-600"
+                : message.includes("⚠️")
+                ? "text-yellow-600"
+                : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Group Name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter group name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg p-2.5 outline-none transition"
+            />
           </div>
-        </div>
 
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded"
-          disabled={loading}
-        >
-          {loading ? "Creating..." : "Create Group"}
-        </button>
-      </form>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Select Members
+            </label>
+            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-2 space-y-1">
+              {users.map((user) => (
+                <label
+                  key={user._id}
+                  className="flex items-center space-x-2 p-1 rounded-md hover:bg-indigo-50 transition cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    value={user._id}
+                    checked={selectedMembers.includes(user._id)}
+                    onChange={() => handleCheckboxChange(user._id)}
+                    className="w-4 h-4 accent-indigo-600"
+                  />
+                  <span className="text-gray-700 font-medium text-sm">
+                    {user.name}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium shadow-md transition"
+          >
+            {loading ? "Creating..." : "Create Group"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

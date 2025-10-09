@@ -77,14 +77,22 @@ const deleteGroup = async (req, res) => {
     const group = await Group.findById(req.params.id);
     if (!group) return res.status(404).json({ message: "Group not found" });
 
+    // Only the creator can delete the group
     if (group.createdBy.toString() !== req.user.id.toString()) {
       return res
         .status(403)
         .json({ message: "You can only delete groups you created" });
     }
 
+    // Delete all expenses related to this group
+    await GroupExpense.deleteMany({ groupId: group._id });
+
+    // Delete the group itself
     await group.deleteOne();
-    res.json({ message: "Group deleted successfully" });
+
+    res.json({
+      message: "Group and all related expenses deleted successfully",
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
