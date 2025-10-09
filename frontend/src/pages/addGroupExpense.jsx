@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { createGroupExpense, fetchGroupDetails } from "../api.js";
+import { AuthContext } from "../context/authContext.jsx";
 
-function AddGroupExpense({ token }) {
+function AddGroupExpense() {
+  const { token } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
 

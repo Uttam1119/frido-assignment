@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   fetchGroupDetails,
@@ -7,8 +7,10 @@ import {
   deleteGroupExpense,
   updateGroupExpense,
 } from "../api.js";
+import { AuthContext } from "../context/authContext.jsx";
 
-function GroupDetails({ token }) {
+function GroupDetails() {
+  const { token } = useContext(AuthContext);
   const { id } = useParams();
   const [group, setGroup] = useState(null);
   const [expenses, setExpenses] = useState([]);

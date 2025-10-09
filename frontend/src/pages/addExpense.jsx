@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { createExpense, fetchUsers } from "../api";
+import { AuthContext } from "../context/authContext";
 
-function AddExpense({ token, currentUserId }) {
+function AddExpense({ currentUserId }) {
+  const { token } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [description, setDescription] = useState("");

@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { fetchGroups, deleteGroup } from "../api.js";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/authContext.jsx";
 
-function Groups({ token }) {
+function Groups() {
+  const { token } = useContext(AuthContext);
   const [myGroups, setMyGroups] = useState([]);
   const [otherGroups, setOtherGroups] = useState([]);
   const [loading, setLoading] = useState(true);

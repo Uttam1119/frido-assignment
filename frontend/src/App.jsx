@@ -91,7 +91,7 @@ function App() {
 
             element={
               <ProtectedRoute>
-                <AddExpense token={token} currentUserId={currentUserId} />
+                <AddExpense currentUserId={currentUserId} />
               </ProtectedRoute>
             }
           />
@@ -107,7 +107,7 @@ function App() {
             path="/groups"
             element={
               <ProtectedRoute>
-                <Groups token={token} />
+                <Groups />
               </ProtectedRoute>
             }
           />
@@ -115,7 +115,7 @@ function App() {
             path="/groups/:id"
             element={
               <ProtectedRoute>
-                <GroupDetails token={token} />
+                <GroupDetails />
               </ProtectedRoute>
             }
           />
@@ -123,7 +123,7 @@ function App() {
             path="/groups/:id/add"
             element={
               <ProtectedRoute>
-                <AddGroupExpense token={token} />
+                <AddGroupExpense />
               </ProtectedRoute>
             }
           />
@@ -132,7 +132,7 @@ function App() {
             path="/groups/create"
             element={
               <ProtectedRoute>
-                <CreateGroup token={token} />
+                <CreateGroup />
               </ProtectedRoute>
             }
           />
