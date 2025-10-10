@@ -21,9 +21,6 @@ function ProtectedRoute({ children }) {
 
 function App() {
   const { token, logout } = useContext(AuthContext);
-  const storedUser = localStorage.getItem("user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
-  const currentUserId = user?._id || "";
 
   return (
     <div className="app">
@@ -91,7 +88,7 @@ function App() {
 
             element={
               <ProtectedRoute>
-                <AddExpense currentUserId={currentUserId} />
+                <AddExpense />
               </ProtectedRoute>
             }
           />

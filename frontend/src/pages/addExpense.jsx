@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { createExpense, fetchUsers } from "../api";
 import { AuthContext } from "../context/authContext";
 
-function AddExpense({ currentUserId }) {
-  const { token } = useContext(AuthContext);
+function AddExpense() {
+  const { user, token } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [paidBy, setPaidBy] = useState("");
   const [message, setMessage] = useState("");
+  const currentUserId = user?.id;
 
   useEffect(() => {
     fetchUsers(token)

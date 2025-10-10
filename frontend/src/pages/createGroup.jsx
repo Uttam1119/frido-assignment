@@ -4,19 +4,22 @@ import { AuthContext } from "../context/authContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 function CreateGroup() {
-  const { token } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [message, setMessage] = useState("");
+  const currentUserId = user?.id;
 
   // Fetch all users
   useEffect(() => {
     const loadUsers = async () => {
       try {
         const data = await fetchUsers(token);
+        console.log("Fetched users:", data);
+        console.log("currentUserId:", currentUserId);
         setUsers(data);
       } catch (err) {
         console.error("Failed to fetch users:", err);
@@ -93,23 +96,25 @@ function CreateGroup() {
               Select Members
             </label>
             <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-2 space-y-1">
-              {users.map((user) => (
-                <label
-                  key={user._id}
-                  className="flex items-center space-x-2 p-1 rounded-md hover:bg-indigo-50 transition cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    value={user._id}
-                    checked={selectedMembers.includes(user._id)}
-                    onChange={() => handleCheckboxChange(user._id)}
-                    className="w-4 h-4 accent-indigo-600"
-                  />
-                  <span className="text-gray-700 font-medium text-sm">
-                    {user.name}
-                  </span>
-                </label>
-              ))}
+              {users
+                .filter((u) => u._id !== currentUserId)
+                .map((user) => (
+                  <label
+                    key={user._id}
+                    className="flex items-center space-x-2 p-1 rounded-md hover:bg-indigo-50 transition cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      value={user._id}
+                      checked={selectedMembers.includes(user._id)}
+                      onChange={() => handleCheckboxChange(user._id)}
+                      className="w-4 h-4 accent-indigo-600"
+                    />
+                    <span className="text-gray-700 font-medium text-sm">
+                      {user.name}
+                    </span>
+                  </label>
+                ))}
             </div>
           </div>
 
