@@ -330,7 +330,7 @@ function QuickSplit() {
         {Object.keys(balances).length > 0 && (
           <div className="mt-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-3">
-              Results
+              💰 Net Balances
             </h3>
             <ul className="space-y-2">
               {Object.entries(balances).map(([p, bal]) => (
@@ -351,7 +351,7 @@ function QuickSplit() {
             {settlements.length > 0 && (
               <>
                 <h4 className="text-md font-semibold mt-4 mb-2 text-indigo-700">
-                  Suggested Settlements
+                  🔄 Suggested Settlements
                 </h4>
                 <ul className="space-y-2">
                   {settlements.map((s, idx) => (
