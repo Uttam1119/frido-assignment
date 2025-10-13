@@ -10,6 +10,7 @@ import Groups from "./pages/groups.jsx";
 import GroupDetails from "./pages/groupDetails.jsx";
 import AddGroupExpense from "./pages/addGroupExpense.jsx";
 import CreateGroup from "./pages/createGroup.jsx";
+import QuickSplit from "./pages/quickSplit.jsx";
 
 function ProtectedRoute({ children }) {
   const { token } = useContext(AuthContext);
@@ -47,6 +48,9 @@ function App() {
               </Link>
               <Link to="/add" className="nav-link">
                 Add Expense
+              </Link>
+              <Link to="/quicksplit" className="nav-link">
+                Quick Split
               </Link>
               <Link to="/balances" className="nav-link">
                 Balances
@@ -100,6 +104,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/quicksplit"
+            element={
+              <ProtectedRoute>
+                <QuickSplit />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/groups"
             element={
